@@ -4,7 +4,6 @@ package config
 //go:generate gofmt -w templates.go
 
 import (
-	"bytes"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -13,6 +12,9 @@ import (
 	"strings"
 	"text/template"
 	"unicode/utf8"
+  "bytes"
+  "compress/gzip"
+  "encoding/base64"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
@@ -46,6 +48,8 @@ func newDefaultCluster() *Cluster {
 		CreateRecordSet:          false,
 		RecordSetTTL:             300,
 		Subnets:                  []Subnet{},
+    ETCDUrl:                  "http://localhost:2379",
+    ETCDClientCert:           "H4sIAEk4PlcAA/PzD1Fw9vdz83QPDXJ14QIAEzRlvw8AAAA=",
 	}
 }
 
@@ -61,6 +65,19 @@ func ClusterFromFile(filename string) (*Cluster, error) {
 	}
 
 	return c, nil
+}
+
+//TODO: This is coppied from tls_config, probably should put it somewhere else
+func compressData(d []byte) (string, error) {
+  var buff bytes.Buffer
+  gzw := gzip.NewWriter(&buff)
+  if _, err := gzw.Write(d); err != nil {
+    return "", err
+  }
+  if err := gzw.Close(); err != nil {
+    return "", err
+  }
+  return base64.StdEncoding.EncodeToString(buff.Bytes()), nil
 }
 
 // ClusterFromBytes Necessary for unit tests, which store configs as hardcoded strings
@@ -125,6 +142,9 @@ type Cluster struct {
 	StackTags                map[string]string `yaml:"stackTags"`
 	UseCalico                bool              `yaml:"useCalico"`
 	Subnets                  []Subnet          `yaml:"subnets"`
+  ETCDUrl                  string            `yaml:"etcdUrl"`
+  ETCDClientCertFile       string            `yaml:"etcdCientCertFile"`
+  ETCDClientCert           string            `yaml:"etcdClientCert"`
 }
 
 type Subnet struct {
@@ -168,6 +188,15 @@ func (c Cluster) Config() (*Config, error) {
 		//This means this VPC already exists, and we can reference it directly by ID
 		config.VPCRef = fmt.Sprintf("%q", config.VPCID)
 	}
+
+  //Base64 encode the ETCDClientCertFile and popule ETCDClientCert
+  if config.ETCDClientCertFile != ""{
+    certFileBytes, err := ioutil.ReadFile(config.ETCDClientCertFile)
+    compressedCert, err := compressData(certFileBytes)
+    if err != nil {
+      config.ETCDClientCert = compressedCert
+    }
+  }  
 
 	return &config, nil
 }

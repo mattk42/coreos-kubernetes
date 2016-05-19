@@ -222,7 +222,7 @@ write_files:
           - /hyperkube
           - apiserver
           - --bind-address=0.0.0.0
-          - --etcd-servers=http://localhost:2379
+          - --etcd-servers={{.ETCDUrl}}
           - --allow-privileged=true
           - --service-cluster-ip-range={{.ServiceCIDR}}
           - --secure-port=443
@@ -725,6 +725,10 @@ write_files:
   - path: /etc/kubernetes/ssl/apiserver-key.pem
     encoding: gzip+base64
     content: {{.TLSConfig.APIServerKey}}
+
+  - path: /etc/kubernetes/ssl/etcd-client-cert.pem
+    encoding: gzip+base64
+    content: {{.ETCDClientCert}}
 
   - path: /etc/kubernetes/cni/net.d/10-calico.conf
     content: |

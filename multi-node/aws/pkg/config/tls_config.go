@@ -1,10 +1,7 @@
 package config
 
 import (
-	"bytes"
-	"compress/gzip"
 	"crypto/rsa"
-	"encoding/base64"
 	"fmt"
 	"io/ioutil"
 	"net"
@@ -167,18 +164,6 @@ func (r *RawTLSAssets) WriteToDir(dirname string) error {
 		}
 	}
 	return nil
-}
-
-func compressData(d []byte) (string, error) {
-	var buff bytes.Buffer
-	gzw := gzip.NewWriter(&buff)
-	if _, err := gzw.Write(d); err != nil {
-		return "", err
-	}
-	if err := gzw.Close(); err != nil {
-		return "", err
-	}
-	return base64.StdEncoding.EncodeToString(buff.Bytes()), nil
 }
 
 type encryptService interface {

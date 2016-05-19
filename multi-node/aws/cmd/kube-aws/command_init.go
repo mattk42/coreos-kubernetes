@@ -31,6 +31,8 @@ func init() {
 	cmdInit.Flags().StringVar(&initOpts.AvailabilityZone, "availability-zone", "", "The AWS availability-zone to deploy to")
 	cmdInit.Flags().StringVar(&initOpts.KeyName, "key-name", "", "The AWS key-pair for ssh access to nodes")
 	cmdInit.Flags().StringVar(&initOpts.KMSKeyARN, "kms-key-arn", "", "The ARN of the AWS KMS key for encrypting TLS assets")
+	cmdInit.Flags().StringVar(&initOpts.ETCDUrl, "etcd-url", "http://localhost:2379", "The URL for an existing etcd cluster (Uses internal etcd if omitted)")
+	cmdInit.Flags().StringVar(&initOpts.ETCDClientCertFile, "etcd-client-cert-file", "", "The client cert file to use for connecting to an existing etcd cluster")
 }
 
 func runCmdInit(cmd *cobra.Command, args []string) error {

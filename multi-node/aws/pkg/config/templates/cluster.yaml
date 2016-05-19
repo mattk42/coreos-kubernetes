@@ -100,3 +100,6 @@ kmsKeyArn: "{{.KMSKeyARN}}"
 #stackTags:
 #  Name: "Kubernetes" 
 #  Environment: "Production"
+
+# URL for the etcd cluster to use
+etcdUrl: {{.ETCDUrl}}
