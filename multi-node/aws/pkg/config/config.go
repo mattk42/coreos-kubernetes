@@ -193,6 +193,7 @@ func (c Cluster) Config() (*Config, error) {
   if config.ETCDClientCertFile != ""{
     certFileBytes, err := ioutil.ReadFile(config.ETCDClientCertFile)
     compressedCert, err := compressData(certFileBytes)
+    config.ETCDClientCert = compressedCert
 
     if err != nil {
       config.ETCDClientCert = compressedCert

@@ -223,6 +223,7 @@ write_files:
           - apiserver
           - --bind-address=0.0.0.0
           - --etcd-servers={{.ETCDUrl}}
+          - --etcd-certfile=/etc/kubernetes/ssl/etcd-client-cert.pem
           - --allow-privileged=true
           - --service-cluster-ip-range={{.ServiceCIDR}}
           - --secure-port=443
