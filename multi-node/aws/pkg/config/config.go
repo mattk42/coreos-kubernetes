@@ -143,7 +143,7 @@ type Cluster struct {
 	UseCalico                bool              `yaml:"useCalico"`
 	Subnets                  []Subnet          `yaml:"subnets"`
   ETCDUrl                  string            `yaml:"etcdUrl"`
-  ETCDClientCertFile       string            `yaml:"etcdCientCertFile"`
+  ETCDClientCertFile       string            `yaml:"etcdClientCertFile"`
   ETCDClientCert           string            `yaml:"etcdClientCert"`
 }
 
@@ -193,6 +193,7 @@ func (c Cluster) Config() (*Config, error) {
   if config.ETCDClientCertFile != ""{
     certFileBytes, err := ioutil.ReadFile(config.ETCDClientCertFile)
     compressedCert, err := compressData(certFileBytes)
+
     if err != nil {
       config.ETCDClientCert = compressedCert
     }

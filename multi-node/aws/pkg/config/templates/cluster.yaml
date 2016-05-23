@@ -103,3 +103,6 @@ kmsKeyArn: "{{.KMSKeyARN}}"
 
 # URL for the etcd cluster to use
 etcdUrl: {{.ETCDUrl}}
+
+# The client cert file for etcd
+etcdClientCertFile: {{.ETCDClientCertFile}}
