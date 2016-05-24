@@ -5,6 +5,7 @@ coreos:
   flannel:
     interface: $private_ipv4
     etcd_endpoints: {{ .ETCDEndpoints }}
+    etcd_certfile: {{ .ETCDClientCert }}
   etcd2:
     name: controller
     advertise-client-urls: http://$private_ipv4:2379
@@ -29,9 +30,9 @@ coreos:
         - name: 10-etcd.conf
           content: |
             [Service]
-            ExecStartPre=/usr/bin/curl --silent -X PUT -d \
+            ExecStartPre=/usr/bin/curl --silent --insecure -X PUT -d \
             "value={\"Network\" : \"{{.PodCIDR}}\", \"Backend\" : {\"Type\" : \"vxlan\"}}" \
-            http://localhost:2379/v2/keys/coreos.com/network/config?prevExist=false
+            {{.ETCDUrl}}/v2/keys/coreos.com/network/config?prevExist=false
     - name: kubelet.service
       command: start
       enable: true

@@ -164,7 +164,7 @@ var supportedReleaseChannels = map[string]bool{
 
 func (c Cluster) Config() (*Config, error) {
 	config := Config{Cluster: c}
-	config.ETCDEndpoints = fmt.Sprintf("http://%s:2379", c.ControllerIP)
+	config.ETCDEndpoints = c.ETCDUrl
 	config.APIServers = fmt.Sprintf("http://%s:8080", c.ControllerIP)
 	config.SecureAPIServers = fmt.Sprintf("https://%s:443", c.ControllerIP)
 	config.APIServerEndpoint = fmt.Sprintf("https://%s", c.ExternalDNSName)
